@@ -17,8 +17,19 @@ const renderRules = {
   },
 
   textgroup: (node, children, parent, styles) => {
+    const isOrderedItem = hasParents(parent, 'ordered_list');
+    const isUnorderedItem = hasParents(parent, 'bullet_list');
+    const isBlockquote = hasParents(parent, 'blockquote');
     return (
-      <Text key={node.key} style={styles.text}>
+      <Text
+        key={node.key}
+        style={[
+          styles.text,
+          !!isOrderedItem && styles.listOrderedItemText,
+          !!isUnorderedItem && styles.listUnorderedItemText,
+          !!isBlockquote && styles.blockquoteText,
+        ]}
+      >
         {children}
       </Text>
     );
@@ -112,7 +123,7 @@ const renderRules = {
   ),
 
   paragraph: (node, children, parent, styles) => (
-    <View key={node.key} style={styles.paragraph}>
+    <View key={node.key} style={parent.length === 0 && styles.paragraph}>
       {children}
     </View>
   ),
@@ -177,9 +188,20 @@ const renderRules = {
     }
 
     if (hasParents(parent, 'ordered_list')) {
+      const orderedListIndex = parent.findIndex(el => el.type === 'ordered_list');
+      const orderedList = parent[orderedListIndex];
+      let listItemNumber;
+      if (orderedList.attributes && orderedList.attributes.start) {
+        listItemNumber = orderedList.attributes.start + node.index;
+      } else {
+        listItemNumber = node.index + 1;
+      }
       return (
         <View key={node.key} style={styles.listOrderedItem}>
-          <Text style={styles.listOrderedItemIcon}>{node.index + 1}{node.markup}</Text>
+          <Text style={styles.listOrderedItemIcon}>
+            {listItemNumber}
+            {node.markup}
+          </Text>
           <View style={[styles.listItem]}>{children}</View>
         </View>
       );

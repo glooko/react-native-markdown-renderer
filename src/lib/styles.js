@@ -59,6 +59,7 @@ export const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: '#CCCCCC',
   },
+  blockquoteText: {},
   inlineCode: {
     borderRadius: 3,
     borderWidth: 1,
@@ -162,7 +163,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     borderColor: '#000000',
     borderBottomWidth: 1,
-
   },
   u: {
     borderColor: '#000000',
